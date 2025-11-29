@@ -1,0 +1,17 @@
+data:
+  raw_path: "data/raw/telco_churn.csv"
+  processed_train_path: "data/processed/train.csv"
+  processed_test_path: "data/processed/test.csv"
+  test_size: 0.2
+  random_state: 42
+  target_col: "Churn"
+
+model:
+  type: "RandomForestClassifier"
+  n_estimators: 200
+  max_depth: 8
+  random_state: 42
+
+mlflow:
+  tracking_uri: "mlruns"
+  experiment_name: "telco_churn_experiment"

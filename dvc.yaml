@@ -1,0 +1,40 @@
+stages:
+  ingest:
+    cmd: python -m src.data_ingestion
+    deps:
+      - src/data_ingestion.py
+      - data/raw/telco_churn.csv
+      - params.yaml
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+
+  preprocess_train:
+    cmd: python -m src.preprocess
+    deps:
+      - src/preprocess.py
+      - data/processed/train.csv
+      - params.yaml
+    outs:
+      - models/preprocessor.pkl
+
+  train:
+    cmd: python -m src.train
+    deps:
+      - src/train.py
+      - models/preprocessor.pkl
+      - data/processed/train.csv
+      - params.yaml
+    outs:
+      - models/model.pkl
+
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+      - src/evaluate.py
+      - models/model.pkl
+      - models/preprocessor.pkl
+      - data/processed/test.csv
+      - params.yaml
+    outs:
+      - reports/metrics.json

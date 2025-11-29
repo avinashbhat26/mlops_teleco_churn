@@ -1,0 +1,98 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python -m src.data_ingestion
+    deps:
+    - path: data/raw/telco_churn.csv
+      hash: md5
+      md5: 0f9de68e012bd3aed5fa7cdc9fc421af
+      size: 977501
+    - path: params.yaml
+      hash: md5
+      md5: 5d864a35acd7ceb1863fd984e0993eb6
+      size: 377
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: 5043fb458cc12a87aefe1c5112aa93ee
+      size: 1328
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 01f7448914dd3a76d914bccd700767af
+      size: 178791
+    - path: data/processed/train.csv
+      hash: md5
+      md5: c89c457ce5af31eab050fa502ff90f9b
+      size: 713348
+  preprocess_train:
+    cmd: python -m src.preprocess
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: c89c457ce5af31eab050fa502ff90f9b
+      size: 713348
+    - path: params.yaml
+      hash: md5
+      md5: 5d864a35acd7ceb1863fd984e0993eb6
+      size: 377
+    - path: src/preprocess.py
+      hash: md5
+      md5: 1d13a63b2cc69b7c53295dfab024823b
+      size: 1683
+    outs:
+    - path: models/preprocessor.pkl
+      hash: md5
+      md5: 25af7d83333299b455ac8c92257793ad
+      size: 54855
+  train:
+    cmd: python -m src.train
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: c89c457ce5af31eab050fa502ff90f9b
+      size: 713348
+    - path: models/preprocessor.pkl
+      hash: md5
+      md5: 25af7d83333299b455ac8c92257793ad
+      size: 54855
+    - path: params.yaml
+      hash: md5
+      md5: 5d864a35acd7ceb1863fd984e0993eb6
+      size: 377
+    - path: src/train.py
+      hash: md5
+      md5: ce688cca3e026f9aa4815ce272d86011
+      size: 1714
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: e832f15064acbf923d86b99777717707
+      size: 969737
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 01f7448914dd3a76d914bccd700767af
+      size: 178791
+    - path: models/model.pkl
+      hash: md5
+      md5: e832f15064acbf923d86b99777717707
+      size: 969737
+    - path: models/preprocessor.pkl
+      hash: md5
+      md5: 25af7d83333299b455ac8c92257793ad
+      size: 54855
+    - path: params.yaml
+      hash: md5
+      md5: 5d864a35acd7ceb1863fd984e0993eb6
+      size: 377
+    - path: src/evaluate.py
+      hash: md5
+      md5: 2e1211cdc0f5d402040a5835d171a752
+      size: 1228
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: cea3cdc95cecf3e53ecbdec31e547de8
+      size: 85
